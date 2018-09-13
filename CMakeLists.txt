@@ -14,7 +14,7 @@ find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 
 
-set(SOURCE_FILES src/main.cpp src/Game.cpp src/Playstate.cpp)
+set(SOURCE_FILES src/main.cpp src/Game.cpp src/Playstate.cpp src/Shader.cpp)
 
 add_executable(bin/${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(bin/${PROJECT_NAME} ${SDL2_LIBRARY}  ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} )
