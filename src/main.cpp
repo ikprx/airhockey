@@ -2,11 +2,14 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "Game.h"
+#include "Model.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "ResourceManager.h"
 
-#define SCR_WIDTH 512
-#define SCR_HEIGTH 512
+const int SCR_WIDTH = 512;
+const int SCR_HEIGTH = 512;
 
 static bool isOpen = true;
 int main(int argc, char * argv[]){
@@ -34,37 +37,9 @@ int main(int argc, char * argv[]){
 
 	Game game;
 	game.init();
-		
-
-	float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // left  
-         0.5f, -0.5f, 0.0f, // right 
-         0.0f,  0.5f, 0.0f  // top   
-    }; 
-
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
-
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0); 
-
 
 	ResourceManager::loadShader("sample", "res/sample.vs", "res/sample.fs");
-
-
+	Model m("res/malpka.obj");
 
 	glViewport(0,0,SCR_WIDTH, SCR_HEIGTH);
 	while(isOpen){
@@ -98,18 +73,25 @@ int main(int argc, char * argv[]){
 			}
 		}
 
+		glm::mat4 projection = glm::ortho(-1.0f,1.0f,-1.0f,1.0f,-100.0f,100.0f);
+		glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3((float)SCR_WIDTH/5,0.0f,0.0f));
+		glm::mat4 view = glm::lookAt(glm::vec3(0.0f,0.0f,1.0f),glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
+		view = glm::mat4(1.0f);
+		model = glm::mat4(1.0f);
+		glm::mat4 mvp = projection *  view * model;
+
+
+		ResourceManager::getShader("sample").setMat4("mvp", mvp);
+		ResourceManager::getShader("sample").setVec4("incolor", glm::vec4(1.0f,0.0f,0.0f,1.0f));
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		ResourceManager::getShader("sample").use();
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
+		m.draw("sample");
+		
 		game.state->update();
 		game.state->handleInput();
 		game.state->draw();
 		SDL_GL_SwapWindow(window);
 
-		std::cout << "FPS is: " << fps << std::endl;
 		startTime = endTime;
 		endTime = SDL_GetTicks();
 	}

@@ -12,6 +12,7 @@ public:
     static Shader loadShader(std::string name, const GLchar * vShaderFile, const GLchar * fShaderFile);
     static Shader getShader(std::string name);
 
+
     static void clear();
 private:
     ResourceManager() {}

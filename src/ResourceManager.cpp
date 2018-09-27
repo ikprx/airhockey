@@ -5,6 +5,8 @@
 
 std::map<std::string, Shader> ResourceManager::shaders;
 
+
+
 Shader ResourceManager::loadShader(std::string name, const GLchar * vShaderFile, const GLchar * fShaderFile)
 {
     shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile);
