@@ -38,9 +38,10 @@ int main(int argc, char * argv[]){
 	Game game;
 	game.init();
 
-	ResourceManager::loadShader("sample", "res/sample.vs", "res/sample.fs");
-	Model m("res/malpka.obj");
+	ResourceManager::loadShader("sample", "res/Shaders/test/sample.vs", "res/Shaders/test/sample.fs");
+	Model m("res/Models/test/test.obj");
 
+	//glEnable(GL_DEPTH_TEST);
 	glViewport(0,0,SCR_WIDTH, SCR_HEIGTH);
 	while(isOpen){
 		if(!startTime){
@@ -74,16 +75,15 @@ int main(int argc, char * argv[]){
 		}
 
 		glm::mat4 projection = glm::ortho(-1.0f,1.0f,-1.0f,1.0f,-100.0f,100.0f);
-		glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3((float)SCR_WIDTH/5,0.0f,0.0f));
+		glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,0.0f,-3.0f));
 		glm::mat4 view = glm::lookAt(glm::vec3(0.0f,0.0f,1.0f),glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
 		view = glm::mat4(1.0f);
 		model = glm::mat4(1.0f);
 		glm::mat4 mvp = projection *  view * model;
 
 
-		ResourceManager::getShader("sample").setMat4("mvp", mvp);
-		ResourceManager::getShader("sample").setVec4("incolor", glm::vec4(1.0f,0.0f,0.0f,1.0f));
-
+		//ResourceManager::getShader("sample").setMat4("mvp", mvp);
+		ResourceManager::getShader("sample").use();
 		glClear(GL_COLOR_BUFFER_BIT);
 		m.draw("sample");
 		

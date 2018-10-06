@@ -13,6 +13,8 @@ include_directories(${OPENGL_INCLUDE_DIR})
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 
+include_directories(${CMAKE_SOURCE_DIR}/deps/stb_image/)
+
 set(ASSIMP_LIBRARIES assimp)
 
 

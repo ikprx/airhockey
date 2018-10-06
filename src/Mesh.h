@@ -9,14 +9,22 @@
 struct Vertex{
     glm::vec3 position;
     glm::vec3 normal;
+    glm::vec2 texCoords;
+};
+
+struct Texture{
+    GLuint id;
+    std::string type;
+    std::string path;
 };
 
 class Mesh{
 public:
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
+    std::vector<Texture> textures;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices);
+    Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures);
     void draw(std::string shadername);
 private:
     GLuint vao, vbo, ebo;
