@@ -113,7 +113,6 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
             vertex.texCoords = vec; 
-            std::cout << "x: " << vec.x << " y: " << vec.y << std::endl;
         }
         else{
             vertex.texCoords = glm::vec2(0.0f,0.0f);

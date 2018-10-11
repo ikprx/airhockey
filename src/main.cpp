@@ -6,6 +6,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "ResourceManager.h"
+#include <imgui.h>
+#include <imgui_impl_sdl.h>
+#define IMGUI_IMPL_OPENGL_LOADER_GLEW
+#define IMGUI_IMPL_OPENGL_LOADER_GL3W 0 
+#include <imgui_impl_opengl3.h>
+
 
 const int SCR_WIDTH= 1280;
 const int SCR_HEIGHT = 720;
@@ -18,21 +24,33 @@ int main(int argc, char * argv[]){
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_CORE);
-	    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE,32);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,16);
-SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
 
 	glEnable(GL_CULL_FACE);
-glCullFace(GL_BACK);
+	glCullFace(GL_BACK);
 	
 	SDL_Window * window = SDL_CreateWindow("Air Hockey", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCR_WIDTH,SCR_HEIGHT, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(window);
 	
 	glewInit();
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	ImGui_ImplSDL2_InitForOpenGL(window, context);
+	ImGui_ImplOpenGL3_Init("#version 330 core");
+	ImGui::StyleColorsDark();
+
+	bool show_demo_window = false;
+	bool show_another_window = false;
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
 
 	Uint32 startTime = 0;
 	Uint32 endTime = 0;
@@ -48,16 +66,12 @@ glCullFace(GL_BACK);
 	game.init();
 
 	ResourceManager::loadShader("sample", "res/Shaders/test/sample.vs", "res/Shaders/test/sample.fs");
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	Model m("res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj");
-	//Model m("res/Models/test/test.obj");
 
 	glEnable(GL_DEPTH_TEST);
 	glViewport(0,0,SCR_WIDTH, SCR_HEIGHT);
 
 
-	glm::vec3 cameraPos = glm::vec3(0.0f,0.0f,3.0f);
-	float xRot = 0.0f;
 	while(isOpen){
 		if(!startTime){
 			startTime = SDL_GetTicks();
@@ -76,27 +90,13 @@ glCullFace(GL_BACK);
 		game.dt = delta;
 
 		while(SDL_PollEvent(&event)){
+			ImGui_ImplSDL2_ProcessEvent(&event);
 			switch(event.type){
 				case SDL_KEYDOWN:
 					switch(event.key.keysym.sym){
-						case SDLK_t:
-							cameraPos.z += 1.0f;
+						case SDLK_ESCAPE:
+							isOpen = false;
 							break;
-						case SDLK_g:
-							cameraPos.z -= 1.0f;
-							break;
-						case SDLK_u:
-							if( xRot == 0){
-							xRot = 90.0f;
-							}
-							else if(xRot == 90.0f){
-								xRot = 180.0f;
-							}
-							else if(xRot == 180.0f){	
-								xRot = 0.0f;
-							}
-							break;
-
 						default:
 							break;
 					}
@@ -108,16 +108,48 @@ glCullFace(GL_BACK);
 					break;
 			}
 		}
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplSDL2_NewFrame(window);
+		ImGui::NewFrame();
+
+		if (show_demo_window)
+		    ImGui::ShowDemoWindow(&show_demo_window);
+
+		static float rotateX; 
+		{
+		    ImGui::Begin("Hello, world!");                          
+
+		    ImGui::Text("This is some useful text.");               
+		    ImGui::Checkbox("Demo Window", &show_demo_window);      
+		    ImGui::Checkbox("Another Window", &show_another_window);
+
+		    ImGui::SliderFloat("RotateX", &rotateX, 0.0f, 360.0f);            
+		    ImGui::ColorEdit3("clear color", (float*)&clear_color); 
+
+
+		    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		    ImGui::End();
+		}
+
+		if (show_another_window)
+		{
+		    ImGui::Begin("Another Window", &show_another_window);   
+		    ImGui::Text("Hello from another window!");
+		    if (ImGui::Button("Close Me"))
+			show_another_window = false;
+		    ImGui::End();
+		}
 
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,0.0f,0.0f));
 		model = glm::scale(model, glm::vec3(0.5f,0.5f,0.5f));
-		model = glm::rotate(model, glm::radians(xRot), glm::vec3(1.0f,0.0f,0.0f));
-		glm::mat4 view = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rotateX), glm::vec3(1.0f,0.0f,0.0f));
+		glm::mat4 view = glm::lookAt(glm::vec3(0.0f,0.0f,3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glm::mat4 mvp = projection *  view * model;
 
 
+		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		ResourceManager::getShader("sample").setMat4("mvp", mvp);
 		ResourceManager::getShader("sample").use();
@@ -126,11 +158,18 @@ glCullFace(GL_BACK);
 		game.state->update();
 		game.state->handleInput();
 		game.state->draw();
+		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		SDL_GL_SwapWindow(window);
 
 		startTime = endTime;
 		endTime = SDL_GetTicks();
 	}
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
 		
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);
