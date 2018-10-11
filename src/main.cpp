@@ -7,8 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "ResourceManager.h"
 
-const int SCR_WIDTH= 1920;
-const int SCR_HEIGHT = 1080;
+const int SCR_WIDTH= 1280;
+const int SCR_HEIGHT = 720;
 
 static bool isOpen = true;
 int main(int argc, char * argv[]){

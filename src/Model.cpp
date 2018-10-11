@@ -5,40 +5,40 @@
 
 unsigned int textureFromFile(const char * path, const std::string & directory){
     std::string filename = std::string(path);
-    filename = directory + '/' + path;
+    filename = directory + '/' + filename;
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
 
-    unsigned int texID;
-    glGenTextures(1, & texID);
-
-    int width, height, nrComp;
-    unsigned char * data = stbi_load(filename.c_str(), &width, &height, &nrComp,STBI_rgb );
-    if(data){
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+    if (data)
+    {
         GLenum format;
-        if(nrComp == 1)
+        if (nrComponents == 1)
             format = GL_RED;
-        else if(nrComp ==3)
+        else if (nrComponents == 3)
             format = GL_RGB;
-        else if(nrComp ==4)
+        else if (nrComponents == 4)
             format = GL_RGBA;
-        
-        glBindTexture(GL_TEXTURE_2D, texID);
-        //glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glBindTexture(GL_TEXTURE_2D, 0);
 
         stbi_image_free(data);
     }
-    else{
-        std::cout << "failed to load at path " << path << std::endl;
+    else
+    {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
         stbi_image_free(data);
     }
-    return texID;
+
+    return textureID;
 }
 
 Model::Model(const std::string & path)
@@ -57,7 +57,7 @@ void Model::loadModel(const std::string & path)
 {
     Assimp::Importer importer;
 
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate  | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate  | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
         std::cout << importer.GetErrorString() << std::endl;
@@ -96,6 +96,16 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
         vector.y = mesh->mNormals[i].y;
         vector.z = mesh->mNormals[i].z;
         vertex.normal = vector;
+
+        vector.x = mesh->mTangents[i].x;
+        vector.y = mesh->mTangents[i].y;
+        vector.z = mesh->mTangents[i].z;
+        vertex.tangent = vector;
+
+        vector.x = mesh->mBitangents[i].x;
+        vector.y = mesh->mBitangents[i].y;
+        vector.z = mesh->mBitangents[i].z;
+        vertex.bitangent = vector;
         vertices.push_back(vertex);
 
         if(mesh->mTextureCoords[0]){
@@ -103,6 +113,7 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
             vertex.texCoords = vec; 
+            std::cout << "x: " << vec.x << " y: " << vec.y << std::endl;
         }
         else{
             vertex.texCoords = glm::vec2(0.0f,0.0f);
