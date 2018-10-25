@@ -2,7 +2,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "Game.h"
-#include "model.h"
+#include "Model.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "ResourceManager.h"
@@ -61,7 +61,7 @@ int main(int argc, char * argv[]){
 	game.init();
 
 	ResourceManager::loadShader("sample", "res/Shaders/test/sample.vs", "res/Shaders/test/sample.fs");
-	Model m("res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj");
+	Model m("res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj", "false");
 	glViewport(0,0,SCR_WIDTH, SCR_HEIGHT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -146,7 +146,7 @@ int main(int argc, char * argv[]){
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,0.0f,0.0f));
 		model = glm::scale(model, glm::vec3(0.5f,0.5f,0.5f));
-		model = glm::rotate(model, glm::radians(rotateX), glm::vec3(1.0f,0.0f,0.0f));
+		model = glm::rotate(model, glm::radians(rotateX), glm::vec3(1.0f,.5f,0.2f));
 		glm::mat4 view = glm::lookAt(glm::vec3(0.0f,0.0f,6.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glm::mat4 mvp = projection *  view * model;
@@ -157,7 +157,7 @@ int main(int argc, char * argv[]){
 		text.renderText("text", "Sample Text", 0.0f,900.0f, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
 		ResourceManager::getShader("sample").use();
 		ResourceManager::getShader("sample").setMat4("mvp", mvp);
-		m.Draw("sample");
+		m.draw("sample");
 		
 		game.state->update();
 		game.state->handleInput();

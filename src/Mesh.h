@@ -1,12 +1,19 @@
 #pragma once
-#include "ResourceManager.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <vector>
-#include <string>
 #include <GL/glew.h>
 
-struct Vertex{
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "ResourceManager.h"
+
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct Vertex {
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 texCoords;
@@ -14,22 +21,25 @@ struct Vertex{
     glm::vec3 bitangent;
 };
 
-struct Texture{
-    GLuint id;
-    std::string type;
-    std::string path;
+struct Texture {
+    unsigned int id;
+    string type;
+    string path;
 };
 
-class Mesh{
+class Mesh {
 public:
-    std::vector<Vertex> vertices;
-    std::vector<GLuint> indices;
-    std::vector<Texture> textures;
+    vector<Vertex> vertices;
+    vector<unsigned int> indices;
+    vector<Texture> textures;
+    unsigned int vao;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures);
-    void draw(std::string shadername);
+    Mesh(std::vector<Vertex> vertices,std::vector<unsigned int> indices, std::vector<Texture> textures);
+
+    void draw(std::string shader);
+
 private:
-    GLuint vao, vbo, ebo;
+    unsigned int vbo, ebo;
 
     void setupMesh();
 };
