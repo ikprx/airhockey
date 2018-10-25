@@ -2,7 +2,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "Game.h"
-#include "Model.h"
+#include "model.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "ResourceManager.h"
@@ -17,8 +17,8 @@
 
 
 
-int SCR_WIDTH= 1280;
-int SCR_HEIGHT = 720;
+int SCR_WIDTH= 1920;
+int SCR_HEIGHT = 1080;
 
 static bool isOpen = true;
 
@@ -29,19 +29,7 @@ int main(int argc, char * argv[]){
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE,32);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,16);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	SDL_Window * window = SDL_CreateWindow("Air Hockey", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCR_WIDTH,SCR_HEIGHT, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(window);
@@ -68,18 +56,19 @@ int main(int argc, char * argv[]){
 
 
 	SDL_Event event;
-	glClearColor(0.1f,0.3f,0.4f,1.0f);
 
 	Game game;
 	game.init();
 
 	ResourceManager::loadShader("sample", "res/Shaders/test/sample.vs", "res/Shaders/test/sample.fs");
 	Model m("res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj");
-
+	glViewport(0,0,SCR_WIDTH, SCR_HEIGHT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glViewport(0,0,SCR_WIDTH, SCR_HEIGHT);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glClearColor(0.1f,0.3f,0.4f,1.0f);
 
 	ResourceManager::loadShader("text", "res/Shaders/text/text.vs" , "res/Shaders/text/text.fs");
 
@@ -165,10 +154,10 @@ int main(int argc, char * argv[]){
 
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		text.renderText("text", "YOU'VE WON!", 640.0f,360.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		text.renderText("text", "Sample Text", 0.0f,900.0f, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
 		ResourceManager::getShader("sample").use();
 		ResourceManager::getShader("sample").setMat4("mvp", mvp);
-		m.draw("sample");
+		m.Draw("sample");
 		
 		game.state->update();
 		game.state->handleInput();
