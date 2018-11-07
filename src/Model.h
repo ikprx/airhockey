@@ -17,10 +17,14 @@
 #include <map>
 #include <vector>
 
+#include <glm/glm.hpp>
 
 class Model 
 {
 public:
+    glm::vec3 boundariesMAX;
+    glm::vec3 boundariesMIN;
+
     std::vector<Texture> textures_loaded;
     std::vector<Mesh> meshes;
     std::string directory;
