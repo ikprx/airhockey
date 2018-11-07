@@ -15,6 +15,7 @@
 #include FT_FREETYPE_H  
 #include "Text.h"
 #include "Camera.h"
+#include "Transform.h"
 
 
 
@@ -45,7 +46,8 @@ int main(int argc, char * argv[]){
 	ImGui_ImplOpenGL3_Init("#version 330 core");
 	ImGui::StyleColorsDark();
 
-	bool show_another_window = false;
+	bool cameraWindow = false;
+	bool positionWindow = false;
 	
 	Uint32 startTime = 0;
 	Uint32 endTime = 0;
@@ -60,7 +62,7 @@ int main(int argc, char * argv[]){
 	game.init();
 
 	ResourceManager::loadShader("sample", "res/Shaders/test/sample.vs", "res/Shaders/test/sample.fs");
-	Model m("res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj", "false");
+	Model m("res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj", false);
 	glViewport(0,0,SCR_WIDTH, SCR_HEIGHT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -76,7 +78,7 @@ int main(int argc, char * argv[]){
 
 	Camera camera;
 	camera.position = glm::vec3(0.0f,0.0f,12.0f);
-
+	Transform transform;
 	while(isOpen){
 		if(!startTime){
 			startTime = SDL_GetTicks();
@@ -120,27 +122,41 @@ int main(int argc, char * argv[]){
 		{
 		    ImGui::Begin("");                          
 
-		    ImGui::Checkbox("Camera Window", &show_another_window);
+		    ImGui::Checkbox("Camera Window", &cameraWindow);
+		    ImGui::Checkbox("Position Window", &positionWindow);
 
 		    ImGui::End();
 		}
 
-		if (show_another_window)
+		if (cameraWindow)
 		{
-		    ImGui::Begin("Camera Window", &show_another_window);   
+		    ImGui::Begin("Camera Window", &cameraWindow);   
 		    ImGui::SliderFloat("pos->x", &camera.position.x, -100.0f, 100.0f);
 		    ImGui::SliderFloat("pos->y", &camera.position.y, -100.0f, 100.0f);
 		    ImGui::SliderFloat("pos->z", &camera.position.z, -100.0f, 100.0f);
 		    
 		    if (ImGui::Button("Close Me"))
-			show_another_window = false;
+			cameraWindow = false;
 		    ImGui::End();
 		}
 
+		if(positionWindow){
+		    ImGui::Begin("position Window", &positionWindow);   
+		    ImGui::SliderFloat("pos->x", &transform.position.x, -100.0f, 100.0f);
+		    ImGui::SliderFloat("pos->y", &transform.position.y, -100.0f, 100.0f);
+		    ImGui::SliderFloat("pos->z", &transform.position.z, -100.0f, 100.0f);
+		    ImGui::SliderFloat("rot->x", &transform.rotation.x, 0, 180.0f);
+		    ImGui::SliderFloat("rot->y", &transform.rotation.y, 0, 180);
+		    ImGui::SliderFloat("rot->z", &transform.rotation.z, 0, 180);
+		    
+		    if (ImGui::Button("Close Me"))
+			cameraWindow = false;
+		    ImGui::End();
+
+		}
+
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,0.0f,0.0f));
-		model = glm::scale(model, glm::vec3(0.5f,0.5f,0.5f));
-		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f,.5f,0.2f));
+		glm::mat4 model = transform.getModel();
 		glm::mat4 view = camera.getWorldToViewMatrix();
 		glm::mat4 mvp = projection *  view * model;
 

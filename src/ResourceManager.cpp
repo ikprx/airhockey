@@ -2,10 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
 std::map<std::string, Shader> ResourceManager::shaders;
-
-
 
 Shader ResourceManager::loadShader(std::string name, const GLchar * vShaderFile, const GLchar * fShaderFile)
 {
