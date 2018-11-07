@@ -14,6 +14,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H  
 #include "Text.h"
+#include "Camera.h"
 
 
 
@@ -33,7 +34,8 @@ int main(int argc, char * argv[]){
 	
 	SDL_Window * window = SDL_CreateWindow("Air Hockey", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCR_WIDTH,SCR_HEIGHT, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(window);
-    glewExperimental = GL_TRUE;	
+    	glewExperimental = GL_TRUE;	
+	
 	glewInit();
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -46,8 +48,7 @@ int main(int argc, char * argv[]){
 	bool show_demo_window = false;
 	bool show_another_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-
+	
 	Uint32 startTime = 0;
 	Uint32 endTime = 0;
 	Uint32 delta = 0;
@@ -74,6 +75,9 @@ int main(int argc, char * argv[]){
 
 	Text text;
 	text.setup(SCR_WIDTH, SCR_HEIGHT, 48, "res/fonts/digital-dream/DigitalDream.ttf");
+
+	Camera camera;
+	camera.position = glm::vec3(0.0f,0.0f,12.0f);
 
 	while(isOpen){
 		if(!startTime){
@@ -147,8 +151,7 @@ int main(int argc, char * argv[]){
 		glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,0.0f,0.0f));
 		model = glm::scale(model, glm::vec3(0.5f,0.5f,0.5f));
 		model = glm::rotate(model, glm::radians(rotateX), glm::vec3(1.0f,.5f,0.2f));
-		glm::mat4 view = glm::lookAt(glm::vec3(0.0f,0.0f,6.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
+		glm::mat4 view = camera.getWorldToViewMatrix();
 		glm::mat4 mvp = projection *  view * model;
 
 
