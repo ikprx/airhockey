@@ -45,9 +45,7 @@ int main(int argc, char * argv[]){
 	ImGui_ImplOpenGL3_Init("#version 330 core");
 	ImGui::StyleColorsDark();
 
-	bool show_demo_window = false;
 	bool show_another_window = false;
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	
 	Uint32 startTime = 0;
 	Uint32 endTime = 0;
@@ -119,29 +117,21 @@ int main(int argc, char * argv[]){
 		ImGui_ImplSDL2_NewFrame(window);
 		ImGui::NewFrame();
 
-		if (show_demo_window)
-		    ImGui::ShowDemoWindow(&show_demo_window);
-
-		static float rotateX; 
 		{
-		    ImGui::Begin("Hello, world!");                          
+		    ImGui::Begin("");                          
 
-		    ImGui::Text("This is some useful text.");               
-		    ImGui::Checkbox("Demo Window", &show_demo_window);      
-		    ImGui::Checkbox("Another Window", &show_another_window);
+		    ImGui::Checkbox("Camera Window", &show_another_window);
 
-		    ImGui::SliderFloat("RotateX", &rotateX, 0.0f, 360.0f);            
-		    ImGui::ColorEdit3("clear color", (float*)&clear_color); 
-
-
-		    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		    ImGui::End();
 		}
 
 		if (show_another_window)
 		{
-		    ImGui::Begin("Another Window", &show_another_window);   
-		    ImGui::Text("Hello from another window!");
+		    ImGui::Begin("Camera Window", &show_another_window);   
+		    ImGui::SliderFloat("pos->x", &camera.position.x, -100.0f, 100.0f);
+		    ImGui::SliderFloat("pos->y", &camera.position.y, -100.0f, 100.0f);
+		    ImGui::SliderFloat("pos->z", &camera.position.z, -100.0f, 100.0f);
+		    
 		    if (ImGui::Button("Close Me"))
 			show_another_window = false;
 		    ImGui::End();
@@ -150,7 +140,7 @@ int main(int argc, char * argv[]){
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,0.0f,0.0f));
 		model = glm::scale(model, glm::vec3(0.5f,0.5f,0.5f));
-		model = glm::rotate(model, glm::radians(rotateX), glm::vec3(1.0f,.5f,0.2f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f,.5f,0.2f));
 		glm::mat4 view = camera.getWorldToViewMatrix();
 		glm::mat4 mvp = projection *  view * model;
 
@@ -166,7 +156,6 @@ int main(int argc, char * argv[]){
 		game.state->handleInput();
 		game.state->draw();
 		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		SDL_GL_SwapWindow(window);
 
