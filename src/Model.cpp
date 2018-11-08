@@ -1,5 +1,6 @@
 #include "Model.h"
 #include <stb_image.h>
+#include <algorithm>
 
 
 unsigned int textureFromFile(const char *path, const std::string &directory, bool gamma = false);
@@ -48,39 +49,56 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         std::vector<unsigned int> indices;
         std::vector<Texture> textures;
 
+        boundariesMIN.x = mesh->mVertices[0].x;
+        boundariesMIN.y= mesh->mVertices[0].y;
+        boundariesMIN.z = mesh->mVertices[0].z;
+
+        boundariesMAX.x = mesh->mVertices[0].x;
+        boundariesMAX.y= mesh->mVertices[0].y;
+        boundariesMAX.z = mesh->mVertices[0].z;
+
         for(unsigned int i = 0; i < mesh->mNumVertices; i++)
         {
-        Vertex vertex;
-        glm::vec3 vector; 
-        vector.x = mesh->mVertices[i].x;
-        vector.y = mesh->mVertices[i].y;
-        vector.z = mesh->mVertices[i].z;
-        vertex.position = vector;
+                Vertex vertex;
+                glm::vec3 vector; 
+                vector.x = mesh->mVertices[i].x;
+                vector.y = mesh->mVertices[i].y;
+                vector.z = mesh->mVertices[i].z;
+                vertex.position = vector;
+                //CALCULATE BOUNDERIES
 
-        vector.x = mesh->mNormals[i].x;
-        vector.y = mesh->mNormals[i].y;
-        vector.z = mesh->mNormals[i].z;
-        vertex.normal = vector;
+                boundariesMIN.x = std::min(boundariesMIN.x, vector.x);
+                boundariesMIN.y = std::min(boundariesMIN.y, vector.y);
+                boundariesMIN.z = std::min(boundariesMIN.z, vector.z);
 
-        if(mesh->mTextureCoords[0]) 
-        {
-        glm::vec2 vec;
-        vec.x = mesh->mTextureCoords[0][i].x; 
-        vec.y = mesh->mTextureCoords[0][i].y;
-        vertex.texCoords = vec;
-        }
-        else
-        vertex.texCoords = glm::vec2(0.0f, 0.0f);
-        vector.x = mesh->mTangents[i].x;
-        vector.y = mesh->mTangents[i].y;
-        vector.z = mesh->mTangents[i].z;
-        vertex.tangent = vector;
+                boundariesMAX.x = std::max(boundariesMAX.x, vector.x);
+                boundariesMAX.y = std::max(boundariesMAX.y, vector.y);
+                boundariesMAX.z = std::max(boundariesMAX.z, vector.z);
+                
+                vector.x = mesh->mNormals[i].x;
+                vector.y = mesh->mNormals[i].y;
+                vector.z = mesh->mNormals[i].z;
+                vertex.normal = vector;
 
-        vector.x = mesh->mBitangents[i].x;
-        vector.y = mesh->mBitangents[i].y;
-        vector.z = mesh->mBitangents[i].z;
-        vertex.bitangent = vector;
-        vertices.push_back(vertex);
+                if(mesh->mTextureCoords[0]) 
+                {
+                glm::vec2 vec;
+                vec.x = mesh->mTextureCoords[0][i].x; 
+                vec.y = mesh->mTextureCoords[0][i].y;
+                vertex.texCoords = vec;
+                }
+                else
+                vertex.texCoords = glm::vec2(0.0f, 0.0f);
+                vector.x = mesh->mTangents[i].x;
+                vector.y = mesh->mTangents[i].y;
+                vector.z = mesh->mTangents[i].z;
+                vertex.tangent = vector;
+
+                vector.x = mesh->mBitangents[i].x;
+                vector.y = mesh->mBitangents[i].y;
+                vector.z = mesh->mBitangents[i].z;
+                vertex.bitangent = vector;
+                vertices.push_back(vertex);
         }
         for(unsigned int i = 0; i < mesh->mNumFaces; i++)
         {
