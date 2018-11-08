@@ -11,7 +11,6 @@
 #include <imgui_impl_opengl3.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H  
-#include "Text.h"
 #include "Camera.h"
 #include "Transform.h"
 
@@ -71,10 +70,7 @@ int main(int argc, char * argv[]){
 	glClearColor(0.1f,0.3f,0.4f,1.0f);
 
 	ResourceManager::loadShader("text", "res/Shaders/text/text.vs" , "res/Shaders/text/text.fs");
-
-	Text text;
-	text.setup(SCR_WIDTH, SCR_HEIGHT, 24, "res/fonts/digital-dream/DigitalDream.ttf");
-
+	ResourceManager::text.setup(SCR_WIDTH, SCR_HEIGHT, 24, "res/fonts/digital-dream/DigitalDream.ttf");
 	Camera camera;
 	camera.position = glm::vec3(0.0f,0.0f,12.0f);
 	Transform transform;
@@ -163,7 +159,7 @@ int main(int argc, char * argv[]){
 
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		text.renderText("text", "Test", 0.0f,20.0f, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
+		ResourceManager::text.renderText("text", "Test", 0.0f,20.0f, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
 
 		ResourceManager::getShader("sample").use();
 		ResourceManager::getShader("sample").setMat4("mvp", mvp);

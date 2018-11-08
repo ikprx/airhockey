@@ -4,6 +4,7 @@
 #include <sstream>
 std::map<std::string, Shader> ResourceManager::shaders;
 std::map<std::string, Model> ResourceManager::models;
+Text ResourceManager::text;
 
 Model ResourceManager::loadModel(std::string name, const std::string & path)
 {
