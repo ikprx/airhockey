@@ -4,9 +4,8 @@
 
 unsigned int textureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
-Model::Model(std::string const &path, bool gamma = false) : gammaCorrection(gamma)
+Model::Model() : gammaCorrection(false)
 {
-        loadModel(path);
 }
 
 void Model::draw(std::string  shader)

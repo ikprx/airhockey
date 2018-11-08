@@ -26,12 +26,12 @@ public:
     std::string directory;
     bool gammaCorrection;
 
-    Model(std::string const &path, bool gamma);
+    Model();
 
     void draw(std::string  shader);
     
-private:
     void loadModel(std::string const &path);
+private:
 
     void processNode(aiNode *node, const aiScene *scene);
 

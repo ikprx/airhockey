@@ -8,8 +8,6 @@
 #include "ResourceManager.h"
 #include <imgui.h>
 #include <imgui_impl_sdl.h>
-#define IMGUI_IMPL_OPENGL_LOADER_GLEW
-#define IMGUI_IMPL_OPENGL_LOADER_GL3W 0 
 #include <imgui_impl_opengl3.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H  
@@ -19,8 +17,8 @@
 
 
 
-int SCR_WIDTH= 1920;
-int SCR_HEIGHT = 1080;
+int SCR_WIDTH= 1280;
+int SCR_HEIGHT = 720;
 
 static bool isOpen = true;
 
@@ -62,7 +60,8 @@ int main(int argc, char * argv[]){
 	game.init();
 
 	ResourceManager::loadShader("sample", "res/Shaders/test/sample.vs", "res/Shaders/test/sample.fs");
-	Model m("res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj", false);
+	ResourceManager::loadModel("gracz1", "res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj");
+
 	glViewport(0,0,SCR_WIDTH, SCR_HEIGHT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -74,11 +73,12 @@ int main(int argc, char * argv[]){
 	ResourceManager::loadShader("text", "res/Shaders/text/text.vs" , "res/Shaders/text/text.fs");
 
 	Text text;
-	text.setup(SCR_WIDTH, SCR_HEIGHT, 48, "res/fonts/digital-dream/DigitalDream.ttf");
+	text.setup(SCR_WIDTH, SCR_HEIGHT, 24, "res/fonts/digital-dream/DigitalDream.ttf");
 
 	Camera camera;
 	camera.position = glm::vec3(0.0f,0.0f,12.0f);
 	Transform transform;
+
 	while(isOpen){
 		if(!startTime){
 			startTime = SDL_GetTicks();
@@ -131,9 +131,9 @@ int main(int argc, char * argv[]){
 		if (cameraWindow)
 		{
 		    ImGui::Begin("Camera Window", &cameraWindow);   
-		    ImGui::SliderFloat("pos->x", &camera.position.x, -100.0f, 100.0f);
-		    ImGui::SliderFloat("pos->y", &camera.position.y, -100.0f, 100.0f);
-		    ImGui::SliderFloat("pos->z", &camera.position.z, -100.0f, 100.0f);
+		    ImGui::SliderFloat("pos->x", &camera.position.x, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->y", &camera.position.y, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->z", &camera.position.z, -10.0f, 10.0f);
 		    
 		    if (ImGui::Button("Close Me"))
 			cameraWindow = false;
@@ -142,9 +142,9 @@ int main(int argc, char * argv[]){
 
 		if(positionWindow){
 		    ImGui::Begin("position Window", &positionWindow);   
-		    ImGui::SliderFloat("pos->x", &transform.position.x, -100.0f, 100.0f);
-		    ImGui::SliderFloat("pos->y", &transform.position.y, -100.0f, 100.0f);
-		    ImGui::SliderFloat("pos->z", &transform.position.z, -100.0f, 100.0f);
+		    ImGui::SliderFloat("pos->x", &transform.position.x, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->y", &transform.position.y, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->z", &transform.position.z, -10.0f, 10.0f);
 		    ImGui::SliderFloat("rot->x", &transform.rotation.x, 0, 180.0f);
 		    ImGui::SliderFloat("rot->y", &transform.rotation.y, 0, 180);
 		    ImGui::SliderFloat("rot->z", &transform.rotation.z, 0, 180);
@@ -163,10 +163,11 @@ int main(int argc, char * argv[]){
 
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		text.renderText("text", "Sample Text", 0.0f,900.0f, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
+		text.renderText("text", "Test", 0.0f,20.0f, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
+
 		ResourceManager::getShader("sample").use();
 		ResourceManager::getShader("sample").setMat4("mvp", mvp);
-		m.draw("sample");
+		ResourceManager::getModel("gracz1").draw("sample");
 		
 		game.state->update();
 		game.state->handleInput();
