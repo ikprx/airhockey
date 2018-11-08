@@ -3,18 +3,16 @@
 #include <fstream>
 #include <sstream>
 std::map<std::string, Shader> ResourceManager::shaders;
-std::map<std::string, Model> ResourceManager::models;
+std::map<std::string, Model*> ResourceManager::models;
 Text ResourceManager::text;
 
-Model ResourceManager::loadModel(std::string name, const std::string & path)
+Model* ResourceManager::loadModel(std::string name, const std::string & path)
 {
-    Model m;
-    m.loadModel(path);
-    models[name] = m;
+    models[name] = new Model(path);
     return models[name];
 }
 
-Model ResourceManager::getModel(std::string name)
+Model* ResourceManager::getModel(std::string name)
 {
     return models[name];
 }

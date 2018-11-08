@@ -5,12 +5,17 @@
 
 unsigned int textureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
-Model::Model() : gammaCorrection(false)
+Model::Model(const std::string & path) : gammaCorrection(false)
 {
+        loadModel(path);
 }
 
-void Model::draw(std::string  shader)
+void Model::draw(std::string  shader, glm::mat4 view, glm::mat4 projection)
 {
+	glm::mat4 model = transform.getModel();
+	glm::mat4 mvp = projection *  view * model;
+	ResourceManager::getShader(shader).use();
+        ResourceManager::getShader(shader).setMat4("mvp", mvp);
         for(unsigned int i = 0; i < meshes.size(); i++)
                 meshes[i].draw(shader);
 }

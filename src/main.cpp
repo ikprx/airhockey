@@ -60,7 +60,7 @@ int main(int argc, char * argv[]){
 
 	ResourceManager::loadShader("sample", "res/Shaders/test/sample.vs", "res/Shaders/test/sample.fs");
 	ResourceManager::loadModel("gracz1", "res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj");
-
+	ResourceManager::loadModel("gracz2", "res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj");
 	glViewport(0,0,SCR_WIDTH, SCR_HEIGHT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -73,7 +73,6 @@ int main(int argc, char * argv[]){
 	ResourceManager::text.setup(SCR_WIDTH, SCR_HEIGHT, 24, "res/fonts/digital-dream/DigitalDream.ttf");
 	Camera camera;
 	camera.position = glm::vec3(0.0f,0.0f,12.0f);
-	Transform transform;
 
 	while(isOpen){
 		if(!startTime){
@@ -138,12 +137,12 @@ int main(int argc, char * argv[]){
 
 		if(positionWindow){
 		    ImGui::Begin("position Window", &positionWindow);   
-		    ImGui::SliderFloat("pos->x", &transform.position.x, -10.0f, 10.0f);
-		    ImGui::SliderFloat("pos->y", &transform.position.y, -10.0f, 10.0f);
-		    ImGui::SliderFloat("pos->z", &transform.position.z, -10.0f, 10.0f);
-		    ImGui::SliderFloat("rot->x", &transform.rotation.x, 0, 180.0f);
-		    ImGui::SliderFloat("rot->y", &transform.rotation.y, 0, 180);
-		    ImGui::SliderFloat("rot->z", &transform.rotation.z, 0, 180);
+		    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("gracz1")->transform.position.x, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("gracz1")->transform.position.y, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("gracz1")->transform.position.z, -10.0f, 10.0f);
+		    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("gracz1")->transform.rotation.x, 0, 180.0f);
+		    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("gracz1")->transform.rotation.y, 0, 180);
+		    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("gracz1")->transform.rotation.z, 0, 180);
 		    
 		    if (ImGui::Button("Close Me"))
 			cameraWindow = false;
@@ -152,22 +151,21 @@ int main(int argc, char * argv[]){
 		}
 
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		glm::mat4 model = transform.getModel();
 		glm::mat4 view = camera.getWorldToViewMatrix();
-		glm::mat4 mvp = projection *  view * model;
 
 
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		ResourceManager::text.renderText("text", "Test", 0.0f,20.0f, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
 
-		ResourceManager::getShader("sample").use();
-		ResourceManager::getShader("sample").setMat4("mvp", mvp);
-		ResourceManager::getModel("gracz1").draw("sample");
+		ResourceManager::getModel("gracz1")->draw("sample", view, projection);
+		ResourceManager::getModel("gracz2")->draw("sample", view, projection);
 		
+
 		game.state->update();
 		game.state->handleInput();
 		game.state->draw();
+		
 		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		SDL_GL_SwapWindow(window);

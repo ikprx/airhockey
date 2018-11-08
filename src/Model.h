@@ -18,7 +18,7 @@
 #include <vector>
 
 #include <glm/glm.hpp>
-
+#include "Transform.h"
 class Model 
 {
 public:
@@ -30,11 +30,12 @@ public:
     std::string directory;
     bool gammaCorrection;
 
-    Model();
+    Model(const std::string & path);
 
-    void draw(std::string  shader);
+    void draw(std::string  shader, glm::mat4 view, glm::mat4 projection);
     
     void loadModel(std::string const &path);
+    Transform transform;
 private:
 
     void processNode(aiNode *node, const aiScene *scene);
