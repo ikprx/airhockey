@@ -54,6 +54,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         std::vector<unsigned int> indices;
         std::vector<Texture> textures;
 
+    
         boundariesMIN.x = mesh->mVertices[0].x;
         boundariesMIN.y= mesh->mVertices[0].y;
         boundariesMIN.z = mesh->mVertices[0].z;
@@ -61,6 +62,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         boundariesMAX.x = mesh->mVertices[0].x;
         boundariesMAX.y= mesh->mVertices[0].y;
         boundariesMAX.z = mesh->mVertices[0].z;
+
 
         for(unsigned int i = 0; i < mesh->mNumVertices; i++)
         {
@@ -70,7 +72,6 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
                 vector.y = mesh->mVertices[i].y;
                 vector.z = mesh->mVertices[i].z;
                 vertex.position = vector;
-                //CALCULATE BOUNDERIES
 
                 boundariesMIN.x = std::min(boundariesMIN.x, vector.x);
                 boundariesMIN.y = std::min(boundariesMIN.y, vector.y);
@@ -79,7 +80,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
                 boundariesMAX.x = std::max(boundariesMAX.x, vector.x);
                 boundariesMAX.y = std::max(boundariesMAX.y, vector.y);
                 boundariesMAX.z = std::max(boundariesMAX.z, vector.z);
-                
+
                 vector.x = mesh->mNormals[i].x;
                 vector.y = mesh->mNormals[i].y;
                 vector.z = mesh->mNormals[i].z;
@@ -105,6 +106,8 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
                 vertex.bitangent = vector;
                 vertices.push_back(vertex);
         }
+
+
         for(unsigned int i = 0; i < mesh->mNumFaces; i++)
         {
         aiFace face = mesh->mFaces[i];
