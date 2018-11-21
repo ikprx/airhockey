@@ -13,26 +13,18 @@
 #include FT_FREETYPE_H  
 #include "Camera.h"
 #include "Transform.h"
+#define TEST_USE_IMGUI
 
 
-
-int SCR_WIDTH= 1280;
-int SCR_HEIGHT = 720;
-
+int SCR_WIDTH= 1920;
+int SCR_HEIGHT = 1080;
 static bool isOpen = true;
 
-bool detectionCircleAABB(std::string modelName1, std::string modelName2){
-	Model * m1 = ResourceManager::getModel(modelName1);
-	Model * m2 = ResourceManager::getModel(modelName2);
-	bool collisionXMIN = (m1->transform.position.x + m1->boundariesMAX.x) >= m2->boundariesMIN.x  + m2->transform.position.x;
-	bool collisionXMAX = (m1->transform.position.x + m1->boundariesMIN.x) <= m2->boundariesMAX.x  + m2->transform.position.x;
-	
-	bool collisionYMIN = (m1->transform.position.y + m1->boundariesMAX.y) >= (m2->transform.position.y + m2->boundariesMIN.y);
-	bool collisionYMAX = (m1->transform.position.y + m1->boundariesMIN.y) <= m2->boundariesMAX.y  + m2->transform.position.y;
-	
-	//bool collisionY = m1->transform.position.y + m1->boundariesMAX.y >= m2->boundariesMAX.y + m2->transform.position.y;
-	return collisionXMIN && collisionXMAX && collisionYMAX && collisionYMIN;
-}
+bool cameraWindow = false;
+bool positionWindow = false;
+bool positionWindow2 = false;
+
+
 
 int main(int argc, char * argv[]){
 	
@@ -48,6 +40,8 @@ int main(int argc, char * argv[]){
     	glewExperimental = GL_TRUE;	
 	
 	glewInit();
+
+#ifdef TEST_USE_IMGUI
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -55,10 +49,7 @@ int main(int argc, char * argv[]){
 	ImGui_ImplSDL2_InitForOpenGL(window, context);
 	ImGui_ImplOpenGL3_Init("#version 330 core");
 	ImGui::StyleColorsDark();
-
-	bool cameraWindow = false;
-	bool positionWindow = false;
-	bool positionWindow2 = false;
+#endif
 
 	Uint32 startTime = 0;
 	Uint32 endTime = 0;
@@ -69,12 +60,9 @@ int main(int argc, char * argv[]){
 
 	SDL_Event event;
 
-	Game game;
+	Game game(SCR_WIDTH, SCR_HEIGHT);
 	game.init();
 
-	ResourceManager::loadShader("sample", "res/Shaders/test/sample.vs", "res/Shaders/test/sample.fs");
-	ResourceManager::loadModel("gracz1", "res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj");
-	ResourceManager::loadModel("test", "res/Models/test/test.obj");
 
 	glViewport(0,0,SCR_WIDTH, SCR_HEIGHT);
 	glEnable(GL_DEPTH_TEST);
@@ -84,10 +72,6 @@ int main(int argc, char * argv[]){
 	glCullFace(GL_BACK);
 	glClearColor(0.1f,0.3f,0.4f,1.0f);
 
-	ResourceManager::loadShader("text", "res/Shaders/text/text.vs" , "res/Shaders/text/text.fs");
-	ResourceManager::text.setup(SCR_WIDTH, SCR_HEIGHT, 24, "res/fonts/digital-dream/DigitalDream.ttf");
-	Camera camera;
-	camera.position = glm::vec3(0.0f,0.0f,12.0f);
 
 	while(isOpen){
 		if(!startTime){
@@ -107,7 +91,9 @@ int main(int argc, char * argv[]){
 		game.dt = delta;
 
 		while(SDL_PollEvent(&event)){
+			#ifdef TEST_USE_IMGUI
 			ImGui_ImplSDL2_ProcessEvent(&event);
+			#endif
 			switch(event.type){
 				case SDL_KEYDOWN:
 					switch(event.key.keysym.sym){
@@ -125,10 +111,10 @@ int main(int argc, char * argv[]){
 					break;
 			}
 		}
+#ifdef TEST_USE_IMGUI
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL2_NewFrame(window);
 		ImGui::NewFrame();
-
 		{
 		    ImGui::Begin("");                          
 
@@ -141,9 +127,9 @@ int main(int argc, char * argv[]){
 		if (cameraWindow)
 		{
 		    ImGui::Begin("Camera Window", &cameraWindow);   
-		    ImGui::SliderFloat("pos->x", &camera.position.x, -10.0f, 10.0f);
-		    ImGui::SliderFloat("pos->y", &camera.position.y, -10.0f, 10.0f);
-		    ImGui::SliderFloat("pos->z", &camera.position.z, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->x", &game.state->camera.position.x, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->y", &game.state->camera.position.y, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->z", &game.state->camera.position.z, -100.0f, 100.0f);
 		    
 		    if (ImGui::Button("Close Me"))
 			cameraWindow = false;
@@ -179,38 +165,25 @@ int main(int argc, char * argv[]){
 		    ImGui::End();
 
 		}
-
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		glm::mat4 view = camera.getWorldToViewMatrix();
-
-
 		ImGui::Render();
+#endif
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		ResourceManager::text.renderText("text", "Test", 0.0f,20.0f, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
-
-		ResourceManager::getModel("gracz1")->draw("sample", view, projection);
-		ResourceManager::getModel("test")->draw("sample", view, projection);
-		
-
 		game.state->update();
 		game.state->handleInput();
 		game.state->draw();
-		
+#ifdef TEST_USE_IMGUI
 		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
 		SDL_GL_SwapWindow(window);
-
-		if(detectionCircleAABB("gracz1","test")){
-			std::cout << delta << " COLLISION" << std::endl;
-		}
-
 		startTime = endTime;
 		endTime = SDL_GetTicks();
 	}
+#ifdef TEST_USE_IMGUI
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
-
+#endif
 		
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);

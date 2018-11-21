@@ -1,13 +1,13 @@
 #include "Game.h"
 #include "Playstate.h"
 
-Game::Game()
+Game::Game(int screenWidth, int screenHeight)
 {
-
+	this->screenWidth = screenWidth;
+	this->screenHeight = screenHeight;
 }
 Game::~Game()
 {
-
 	
 }
 void Game::init()
