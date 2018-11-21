@@ -88,7 +88,7 @@ int main(int argc, char * argv[]){
 		if(delta>timePerFrame){
 			fps = 1000/delta;
 		}
-		game.dt = delta;
+		game.dt = (float)delta/1000;
 
 		while(SDL_PollEvent(&event)){
 			#ifdef TEST_USE_IMGUI
