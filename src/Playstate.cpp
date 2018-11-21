@@ -12,9 +12,9 @@ void Playstate::update()
 {
 	if(Physics::collisionDetection(ResourceManager::getModel("gracz1"), ResourceManager::getModel("test")))
 	{
-		std::cout << "Collission occured! Ticks: " << SDL_GetTicks() << std::endl;
+		ResourceManager::getModel("gracz1")->acceleration = -1.0f;
 	}
-	ResourceManager::getModel("gracz1")->transform.position.x += game->dt;
+	ResourceManager::getModel("gracz1")->transform.position.x += game->dt * ResourceManager::getModel("gracz1")->acceleration;
 }
 void Playstate::draw()
 {
@@ -34,6 +34,11 @@ Playstate::Playstate(Game * game){
 	ResourceManager::loadModel("test", "res/Models/test/test.obj");
 	ResourceManager::loadShader("text", "res/Shaders/text/text.vs" , "res/Shaders/text/text.fs");
 	ResourceManager::text.setup(game->screenWidth, game->screenHeight, 24, "res/fonts/digital-dream/DigitalDream.ttf");
+
+        ResourceManager::getModel("gracz1")->acceleration = 1.0f;
+	ResourceManager::getModel("gracz1")->transform.scale = glm::vec3(0.25f,0.25f,0.25f);
+	ResourceManager::getModel("gracz1")->transform.position = glm::vec3(-5.0f,0.0f,0.0f);
+
 
 
 	this->camera.position = glm::vec3(0.0f,0.0f,12.0f);

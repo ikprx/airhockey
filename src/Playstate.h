@@ -8,7 +8,6 @@ class Game;
 
 class Playstate: public GameState{
 public:
-	Camera camera;
 	virtual void handleInput();
 	virtual void update();
 	virtual void draw();

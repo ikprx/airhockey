@@ -5,8 +5,6 @@
 
 struct Camera{
         glm::vec3 position;
-        glm::vec3 rotation;
-
         Camera();
         glm::mat4 getWorldToViewMatrix();    
 private:
