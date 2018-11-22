@@ -5,7 +5,7 @@
 
 unsigned int textureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
-Model::Model(const std::string & path) : gammaCorrection(false), acceleration(0.0f,0.0f)
+Model::Model(const std::string & path) : gammaCorrection(false), acceleration(0.0f,0.0f), color(1.0f,1.0f,1.0f)
 {
         loadModel(path);
 }
@@ -16,6 +16,7 @@ void Model::draw(std::string  shader, glm::mat4 view, glm::mat4 projection)
 	glm::mat4 mvp = projection *  view * model;
 	ResourceManager::getShader(shader).use();
         ResourceManager::getShader(shader).setMat4("mvp", mvp);
+        ResourceManager::getShader(shader).setVec3("color", color);
         for(unsigned int i = 0; i < meshes.size(); i++)
                 meshes[i].draw(shader);
 }

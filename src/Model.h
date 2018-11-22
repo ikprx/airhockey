@@ -25,7 +25,7 @@ public:
     glm::vec2 acceleration;
     glm::vec3 boundariesMAX;
     glm::vec3 boundariesMIN;
-    
+    glm::vec3 color; 
 
     std::vector<Texture> textures_loaded;
     std::vector<Mesh> meshes;

@@ -13,28 +13,36 @@ void Playstate::update()
 	if(score1 != 5 && score2 !=5){
 		if(Physics::collisionDetection(ResourceManager::getModel("player1"), ResourceManager::getModel("puck")))
 		{
-			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-			if(ResourceManager::getModel("puck")->acceleration.y == 0){
-				if(std::rand() % 2 ==0){
-					ResourceManager::getModel("puck")->acceleration.y = 2.43f;
-				}
-				else{
-					ResourceManager::getModel("puck")->acceleration.y = -2.43f;
-				}
+			if(ResourceManager::getModel("puck")->transform.position.y > ResourceManager::getModel("player1")->transform.position.y)
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				ResourceManager::getModel("puck")->acceleration.y = 1.0f;
 			}
-			else{
-				ResourceManager::getModel("puck")->acceleration.y *= -1.0f;
+			else if(ResourceManager::getModel("puck")->transform.position.y < ResourceManager::getModel("player1")->transform.position.y)
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				ResourceManager::getModel("puck")->acceleration.y = -1.0f;
+			}
+			else
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
 			}
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("player2"), ResourceManager::getModel("puck")))
 		{
-			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-
-			if(ResourceManager::getModel("puck")->acceleration.y == 0){
-				ResourceManager::getModel("puck")->acceleration.y = 2.43f;
+			if(ResourceManager::getModel("puck")->transform.position.y > ResourceManager::getModel("player2")->transform.position.y)
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				ResourceManager::getModel("puck")->acceleration.y = 1.0f;
 			}
-			else{
-				ResourceManager::getModel("puck")->acceleration.y = -2.43f;
+			else if(ResourceManager::getModel("puck")->transform.position.y < ResourceManager::getModel("player2")->transform.position.y)
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				ResourceManager::getModel("puck")->acceleration.y = -1.0f;
+			}
+			else			
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
 			}
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("UPobstacle")))
@@ -81,7 +89,6 @@ void Playstate::update()
 		output+= "WYGRAL!";
 		ResourceManager::text.renderText("text", output  , game->screenWidth/2-90,game->screenHeight/2, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
 	}
-	std::cout << "Acc x: " << ResourceManager::getModel("puck")->acceleration.x << " , y: " << ResourceManager::getModel("puck")->acceleration.y << std::endl;
 }
 void Playstate::draw()
 {
@@ -92,13 +99,14 @@ void Playstate::draw()
 	ResourceManager::getModel("player1")->draw("sample", view, projection);
 	ResourceManager::getModel("player2")->draw("sample", view, projection);
 	ResourceManager::getModel("puck")->draw("sample", view, projection);
+	/*
 	ResourceManager::getModel("UPobstacle")->draw("sample", view, projection);
 	ResourceManager::getModel("BOTTOMobstacle")->draw("sample", view, projection);
 	ResourceManager::getModel("LEFTUPobstacle")->draw("sample", view, projection);
 	ResourceManager::getModel("LEFTBOTTOMobstacle")->draw("sample", view, projection);
 	ResourceManager::getModel("RIGHTUPobstacle")->draw("sample", view, projection);
 	ResourceManager::getModel("RIGHTBOTTOMobstacle")->draw("sample", view, projection);
-	
+	*/
 	ResourceManager::getModel("field")->draw("sample", view, projection);
 	ResourceManager::getModel("goal")->draw("sample", view, projection);
 	ResourceManager::getModel("goal2")->draw("sample", view, projection);
@@ -115,7 +123,9 @@ Playstate::Playstate(Game * game){
 	ResourceManager::loadModel("puck", "res/Models/hockeypuck/10511_Hockey_puck_v1_L3.obj");
 	ResourceManager::loadModel("field", "res/Models/field/field.obj");
 	ResourceManager::loadModel("goal", "res/Models/goal/Hockey Gates model.obj");
+	ResourceManager::getModel("goal")->color = glm::vec3(1.0f,0.0f,0.0f);
 	ResourceManager::loadModel("goal2", "res/Models/goal/Hockey Gates model.obj");
+	ResourceManager::getModel("goal2")->color = glm::vec3(1.0f,0.0f,0.0f);
 	ResourceManager::loadModel("UPobstacle", "res/Models/obstacle/obstacle.obj");
 	ResourceManager::loadModel("BOTTOMobstacle", "res/Models/obstacle/obstacle.obj");
 	ResourceManager::loadModel("LEFTUPobstacle", "res/Models/obstacleY/obstacle.obj");
