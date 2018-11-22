@@ -23,7 +23,7 @@ static bool isOpen = true;
 bool cameraWindow = false;
 bool positionWindow = false;
 bool positionWindow2 = false;
-
+bool positionWIndow3 = false;
 
 
 int main(int argc, char * argv[]){
@@ -121,6 +121,7 @@ int main(int argc, char * argv[]){
 		    ImGui::Checkbox("Camera Window", &cameraWindow);
 		    ImGui::Checkbox("Position Window", &positionWindow);
 		    ImGui::Checkbox("Position Window2", &positionWindow2);
+		    ImGui::Checkbox("Position Window3", &positionWIndow3);
 		    ImGui::End();
 		}
 
@@ -138,12 +139,12 @@ int main(int argc, char * argv[]){
 
 		if(positionWindow){
 		    ImGui::Begin("position Window", &positionWindow);   
-		    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("gracz1")->transform.position.x, -10.0f, 10.0f);
-		    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("gracz1")->transform.position.y, -10.0f, 10.0f);
-		    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("gracz1")->transform.position.z, -10.0f, 10.0f);
-		    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("gracz1")->transform.rotation.x, 0, 180.0f);
-		    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("gracz1")->transform.rotation.y, 0, 180);
-		    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("gracz1")->transform.rotation.z, 0, 180);
+		    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("player1")->transform.position.x, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("player1")->transform.position.y, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("player1")->transform.position.z, -10.0f, 10.0f);
+		    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("player1")->transform.rotation.x, 0, 180.0f);
+		    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("player1")->transform.rotation.y, 0, 180);
+		    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("player1")->transform.rotation.z, 0, 180);
 		    
 		    if (ImGui::Button("Close Me"))
 				positionWindow = false;
@@ -153,18 +154,34 @@ int main(int argc, char * argv[]){
 
 		if(positionWindow2){
 		    ImGui::Begin("position Window2", &positionWindow);   
-		    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("test")->transform.position.x, -10.0f, 10.0f);
-		    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("test")->transform.position.y, -10.0f, 10.0f);
-		    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("test")->transform.position.z, -10.0f, 10.0f);
-		    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("test")->transform.rotation.x, 0, 180.0f);
-		    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("test")->transform.rotation.y, 0, 180);
-		    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("test")->transform.rotation.z, 0, 180);
+		    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("player2")->transform.position.x, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("player2")->transform.position.y, -10.0f, 10.0f);
+		    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("player2")->transform.position.z, -10.0f, 10.0f);
+		    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("player2")->transform.rotation.x, 0, 180.0f);
+		    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("player2")->transform.rotation.y, 0, 180);
+		    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("player2")->transform.rotation.z, 0, 180);
 		    
 		    if (ImGui::Button("Close Me"))
 				positionWindow2 = false;
 		    ImGui::End();
-
 		}
+
+                if(positionWIndow3){
+                    ImGui::Begin("position Window3", &positionWindow);   
+                    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("LEFTUPobstacle")->transform.position.x, -10.0f, 10.0f);
+                    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("LEFTUPobstacle")->transform.position.y, -10.0f, 10.0f);
+                    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("LEFTUPobstacle")->transform.position.z, -10.0f, 10.0f);
+                    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("LEFTUPobstacle")->transform.rotation.x, 0, 180.0f);
+                    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("LEFTUPobstacle")->transform.rotation.y, 0, 180);
+                    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("LEFTUPobstacle")->transform.rotation.z, 0, 180);
+                    ImGui::SliderFloat("scale->x", &ResourceManager::getModel("LEFTUPobstacle")->transform.scale.x, 0, 5.0f);
+                    ImGui::SliderFloat("scale->y", &ResourceManager::getModel("LEFTUPobstacle")->transform.scale.y, 0, 5.0f);
+                    ImGui::SliderFloat("scale->z", &ResourceManager::getModel("LEFTUPobstacle")->transform.scale.z, 0, 5.0f);
+                    if (ImGui::Button("Close Me"))
+                                positionWindow2 = false;
+                    ImGui::End();
+
+                }
 		ImGui::Render();
 #endif
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
