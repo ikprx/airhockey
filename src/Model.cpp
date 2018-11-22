@@ -5,7 +5,7 @@
 
 unsigned int textureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
-Model::Model(const std::string & path) : gammaCorrection(false)
+Model::Model(const std::string & path) : gammaCorrection(false), acceleration(0.0f,0.0f)
 {
         loadModel(path);
 }

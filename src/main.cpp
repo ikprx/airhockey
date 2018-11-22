@@ -168,15 +168,15 @@ int main(int argc, char * argv[]){
 
                 if(positionWIndow3){
                     ImGui::Begin("position Window3", &positionWindow);   
-                    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("LEFTUPobstacle")->transform.position.x, -10.0f, 10.0f);
-                    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("LEFTUPobstacle")->transform.position.y, -10.0f, 10.0f);
-                    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("LEFTUPobstacle")->transform.position.z, -10.0f, 10.0f);
-                    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("LEFTUPobstacle")->transform.rotation.x, 0, 180.0f);
-                    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("LEFTUPobstacle")->transform.rotation.y, 0, 180);
-                    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("LEFTUPobstacle")->transform.rotation.z, 0, 180);
-                    ImGui::SliderFloat("scale->x", &ResourceManager::getModel("LEFTUPobstacle")->transform.scale.x, 0, 5.0f);
-                    ImGui::SliderFloat("scale->y", &ResourceManager::getModel("LEFTUPobstacle")->transform.scale.y, 0, 5.0f);
-                    ImGui::SliderFloat("scale->z", &ResourceManager::getModel("LEFTUPobstacle")->transform.scale.z, 0, 5.0f);
+                    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("goal2")->transform.position.x, -10.0f, 10.0f);
+                    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("goal2")->transform.position.y, -10.0f, 10.0f);
+                    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("goal2")->transform.position.z, -10.0f, 10.0f);
+                    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("goal2")->transform.rotation.x, 0, 180.0f);
+                    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("goal2")->transform.rotation.y, 0, 180);
+                    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("goal2")->transform.rotation.z, 0, 180);
+                    ImGui::SliderFloat("scale->x", &ResourceManager::getModel("goal2")->transform.scale.x, 0, 5.0f);
+                    ImGui::SliderFloat("scale->y", &ResourceManager::getModel("goal2")->transform.scale.y, 0, 5.0f);
+                    ImGui::SliderFloat("scale->z", &ResourceManager::getModel("goal2")->transform.scale.z, 0, 5.0f);
                     if (ImGui::Button("Close Me"))
                                 positionWindow2 = false;
                     ImGui::End();

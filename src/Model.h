@@ -22,7 +22,7 @@
 class Model 
 {
 public:
-    float acceleration;
+    glm::vec2 acceleration;
     glm::vec3 boundariesMAX;
     glm::vec3 boundariesMIN;
     
