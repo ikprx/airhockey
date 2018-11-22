@@ -7,6 +7,8 @@
 class Game;
 
 class Playstate: public GameState{
+	int score1, score2;
+	bool inputState;
 public:
 	virtual void handleInput();
 	virtual void update();

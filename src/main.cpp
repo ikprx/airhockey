@@ -70,7 +70,6 @@ int main(int argc, char * argv[]){
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glClearColor(0.1f,0.3f,0.4f,1.0f);
 
 
 	while(isOpen){
@@ -168,15 +167,15 @@ int main(int argc, char * argv[]){
 
                 if(positionWIndow3){
                     ImGui::Begin("position Window3", &positionWindow);   
-                    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("goal2")->transform.position.x, -10.0f, 10.0f);
-                    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("goal2")->transform.position.y, -10.0f, 10.0f);
-                    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("goal2")->transform.position.z, -10.0f, 10.0f);
-                    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("goal2")->transform.rotation.x, 0, 180.0f);
-                    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("goal2")->transform.rotation.y, 0, 180);
-                    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("goal2")->transform.rotation.z, 0, 180);
-                    ImGui::SliderFloat("scale->x", &ResourceManager::getModel("goal2")->transform.scale.x, 0, 5.0f);
-                    ImGui::SliderFloat("scale->y", &ResourceManager::getModel("goal2")->transform.scale.y, 0, 5.0f);
-                    ImGui::SliderFloat("scale->z", &ResourceManager::getModel("goal2")->transform.scale.z, 0, 5.0f);
+                    ImGui::SliderFloat("pos->x", &ResourceManager::getModel("puck")->transform.position.x, -10.0f, 10.0f);
+                    ImGui::SliderFloat("pos->y", &ResourceManager::getModel("puck")->transform.position.y, -10.0f, 10.0f);
+                    ImGui::SliderFloat("pos->z", &ResourceManager::getModel("puck")->transform.position.z, -10.0f, 10.0f);
+                    ImGui::SliderFloat("rot->x", &ResourceManager::getModel("puck")->transform.rotation.x, 0, 180.0f);
+                    ImGui::SliderFloat("rot->y", &ResourceManager::getModel("puck")->transform.rotation.y, 0, 180);
+                    ImGui::SliderFloat("rot->z", &ResourceManager::getModel("puck")->transform.rotation.z, 0, 180);
+                    ImGui::SliderFloat("scale->x", &ResourceManager::getModel("puck")->transform.scale.x, 0, 5.0f);
+                    ImGui::SliderFloat("scale->y", &ResourceManager::getModel("puck")->transform.scale.y, 0, 5.0f);
+                    ImGui::SliderFloat("scale->z", &ResourceManager::getModel("puck")->transform.scale.z, 0, 5.0f);
                     if (ImGui::Button("Close Me"))
                                 positionWindow2 = false;
                     ImGui::End();
