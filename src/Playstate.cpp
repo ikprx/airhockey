@@ -27,6 +27,7 @@ void Playstate::update()
 			{
 				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
 			}
+			lastCollision = "player1";
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("player2"), ResourceManager::getModel("puck")))
 		{
@@ -44,30 +45,41 @@ void Playstate::update()
 			{
 				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
 			}
+			lastCollision = "player2";
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("UPobstacle")))
 		{
-			ResourceManager::getModel("puck")->acceleration.y *= -1.0f;
+			if(lastCollision != "UPobstacle"){
+				ResourceManager::getModel("puck")->acceleration.y *= -1.0f;
+				lastCollision = "UPobstacle";
+			}
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("BOTTOMobstacle")))
 		{
-			ResourceManager::getModel("puck")->acceleration.y *= -1.0f;
+			if(lastCollision != "BOTTOMobstacle"){
+				ResourceManager::getModel("puck")->acceleration.y *= -1.0f;
+				lastCollision = "BOTTOMobstacle";
+			}
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("LEFTUPobstacle")))
 		{
 			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+			lastCollision = "LEFTUPobstacle";
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("LEFTBOTTOMobstacle")))
 		{
 			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+			lastCollision = "LEFTBOTTOMobstacle";
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("RIGHTUPobstacle")))
 		{
 			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+			lastCollision = "RIGHTUPobstacle";
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("RIGHTBOTTOMobstacle")))
 		{
 			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+			lastCollision = "RIGHTBOTTOMobstacle";
 		}
 		if(ResourceManager::getModel("puck")->transform.position.x > ResourceManager::getModel("goal2")->transform.position.x + (ResourceManager::getModel("goal2")->boundariesMAX.x/2)* ResourceManager::getModel("goal2")->transform.scale.x){
 			score1++;

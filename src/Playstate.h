@@ -9,6 +9,7 @@ class Game;
 class Playstate: public GameState{
 	int score1, score2;
 	bool inputState;
+	std::string lastCollision;
 public:
 	virtual void handleInput();
 	virtual void update();
