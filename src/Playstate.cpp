@@ -69,6 +69,16 @@ void Playstate::update()
 			}
 			lastCollision = "player2";
 		}
+		if(ResourceManager::getModel("puck")->transform.position.x > ResourceManager::getModel("goal2")->transform.position.x + (ResourceManager::getModel("goal2")->boundariesMAX.x/2)* ResourceManager::getModel("goal2")->transform.scale.x){
+			score1++;
+			ResourceManager::getModel("puck")->transform.position = glm::vec3(0.0f,0.0f,0.0f);
+			ResourceManager::getModel("puck")->acceleration = glm::vec2(3.0f,0.0f);
+		}
+		if(ResourceManager::getModel("puck")->transform.position.x < ResourceManager::getModel("goal")->transform.position.x - (ResourceManager::getModel("goal")->boundariesMAX.x/2)* ResourceManager::getModel("goal")->transform.scale.x){
+			score2++;
+			ResourceManager::getModel("puck")->transform.position = glm::vec3(0.0f,0.0f,0.0f);
+			ResourceManager::getModel("puck")->acceleration = glm::vec2(-3.0f,0.0f);
+		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("UPobstacle")))
 		{
 			if(lastCollision != "UPobstacle"){
@@ -85,33 +95,35 @@ void Playstate::update()
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("LEFTUPobstacle")))
 		{
-			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-			lastCollision = "LEFTUPobstacle";
+			if(lastCollision != "LEFTUPobstacle")
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				lastCollision = "LEFTUPobstacle";
+			}
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("LEFTBOTTOMobstacle")))
 		{
-			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-			lastCollision = "LEFTBOTTOMobstacle";
+			if(lastCollision != "LEFTBOTTOMobstacle")
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				lastCollision = "LEFTBOTTOMobstacle";
+			}
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("RIGHTUPobstacle")))
 		{
-			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-			lastCollision = "RIGHTUPobstacle";
+			if(lastCollision != "RIGHTUPobstacle")
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				lastCollision = "RIGHTUPobstacle";
+			}
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("RIGHTBOTTOMobstacle")))
 		{
-			ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-			lastCollision = "RIGHTBOTTOMobstacle";
-		}
-		if(ResourceManager::getModel("puck")->transform.position.x > ResourceManager::getModel("goal2")->transform.position.x + (ResourceManager::getModel("goal2")->boundariesMAX.x/2)* ResourceManager::getModel("goal2")->transform.scale.x){
-			score1++;
-			ResourceManager::getModel("puck")->transform.position = glm::vec3(0.0f,0.0f,0.0f);
-			ResourceManager::getModel("puck")->acceleration = glm::vec2(3.0f,0.0f);
-		}
-		if(ResourceManager::getModel("puck")->transform.position.x < ResourceManager::getModel("goal")->transform.position.x - (ResourceManager::getModel("goal")->boundariesMAX.x/2)* ResourceManager::getModel("goal")->transform.scale.x){
-			score2++;
-			ResourceManager::getModel("puck")->transform.position = glm::vec3(0.0f,0.0f,0.0f);
-			ResourceManager::getModel("puck")->acceleration = glm::vec2(-3.0f,0.0f);
+			if(lastCollision != "RIGHTBOTTOMobstacle")
+			{
+				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				lastCollision = "RIGHTBOTTOMobstacle";
+			}
 		}
 		ResourceManager::getModel("puck")->transform.position.x += game->dt * ResourceManager::getModel("puck")->acceleration.x;
 		ResourceManager::getModel("puck")->transform.position.y += game->dt * ResourceManager::getModel("puck")->acceleration.y;
