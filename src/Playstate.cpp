@@ -4,9 +4,31 @@
 #include <imgui_impl_opengl3.h>
 #include "Physics.h"
 #include <SDL2/SDL.h>
-void Playstate::handleInput()
+void Playstate::handleInput(SDL_Event event)
 {
-
+	Model * m = ResourceManager::getModel("player1");
+	if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_w){
+		if(m->acceleration != glm::vec2(0.0f,0.0f))
+		{
+			m->acceleration = glm::vec2(0.0f,0.0f);
+		}
+	}
+	if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_w){
+		if(m->acceleration.y != 1.0f){
+			m->acceleration.y = std::min( std::max(m->acceleration.y + 5.0f * game->dt, 1.0f), 1.0f);
+		}	
+	}
+	if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_s){
+		if(m->acceleration != glm::vec2(0.0f,0.0f))
+		{
+			m->acceleration = glm::vec2(0.0f,0.0f);
+		}
+	}
+	if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_s){
+		if(m->acceleration.y != 1.0f){
+			m->acceleration.y = std::min( std::max(m->acceleration.y - (5.0f * game->dt), -1.0f), -1.0f);
+		}	
+	}
 }
 void Playstate::update()
 {
@@ -93,6 +115,7 @@ void Playstate::update()
 		}
 		ResourceManager::getModel("puck")->transform.position.x += game->dt * ResourceManager::getModel("puck")->acceleration.x;
 		ResourceManager::getModel("puck")->transform.position.y += game->dt * ResourceManager::getModel("puck")->acceleration.y;
+		ResourceManager::getModel("player1")->transform.position.y += game->dt * ResourceManager::getModel("player1")->acceleration.y;
 	}
 	else{
 		inputState = false;

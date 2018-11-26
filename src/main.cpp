@@ -90,6 +90,7 @@ int main(int argc, char * argv[]){
 		game.dt = (float)delta/1000;
 
 		while(SDL_PollEvent(&event)){
+			game.state->handleInput(event);
 			#ifdef TEST_USE_IMGUI
 			ImGui_ImplSDL2_ProcessEvent(&event);
 			#endif
@@ -185,7 +186,6 @@ int main(int argc, char * argv[]){
 #endif
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		game.state->update();
-		game.state->handleInput();
 		game.state->draw();
 #ifdef TEST_USE_IMGUI
 		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);

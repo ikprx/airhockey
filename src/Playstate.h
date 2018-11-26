@@ -11,7 +11,7 @@ class Playstate: public GameState{
 	bool inputState;
 	std::string lastCollision;
 public:
-	virtual void handleInput();
+	virtual void handleInput(SDL_Event event);
 	virtual void update();
 	virtual void draw();
 	Playstate(Game * game);
