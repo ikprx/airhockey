@@ -14,10 +14,10 @@
 #include "Camera.h"
 #include "Transform.h"
 #define TEST_USE_IMGUI
+#undef TEST_USE_IMGUI
 
-
-int SCR_WIDTH= 1920;
-int SCR_HEIGHT = 1080;
+int SCR_WIDTH= 1280;
+int SCR_HEIGHT = 720;
 static bool isOpen = true;
 
 bool cameraWindow = false;

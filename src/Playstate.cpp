@@ -4,6 +4,23 @@
 #include <imgui_impl_opengl3.h>
 #include "Physics.h"
 #include <SDL2/SDL.h>
+
+const int DELTA_CONTROL = 2500;
+
+void Playstate::controlOpponent(){
+	Model *player = ResourceManager::getModel("player2");
+	Model * puck = ResourceManager::getModel("puck");
+	if(puck->transform.position.y > player->transform.position.y){
+		player->acceleration.y = 1.0f;
+	}
+	else if(puck->transform.position.y == player->transform.position.y){
+		player->acceleration.y = 0.0f;
+	}
+	else{
+		player->acceleration.y = -1.0f;
+	}
+}
+
 void Playstate::handleInput(SDL_Event event)
 {
 	Model * m = ResourceManager::getModel("player1");
@@ -35,49 +52,62 @@ void Playstate::update()
 	if(score1 != 5 && score2 !=5){
 		if(Physics::collisionDetection(ResourceManager::getModel("player1"), ResourceManager::getModel("puck")))
 		{
-			if(ResourceManager::getModel("puck")->transform.position.y > ResourceManager::getModel("player1")->transform.position.y)
+			if(lastCollision != "player1")
 			{
-				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-				ResourceManager::getModel("puck")->acceleration.y = 1.0f;
+				if(ResourceManager::getModel("puck")->transform.position.y > ResourceManager::getModel("player1")->transform.position.y)
+				{
+					ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+					ResourceManager::getModel("puck")->acceleration.y = 1.0f;
+				}
+				else if(ResourceManager::getModel("puck")->transform.position.y < ResourceManager::getModel("player1")->transform.position.y)
+				{
+					ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+					ResourceManager::getModel("puck")->acceleration.y = -1.0f;
+				}
+				else
+				{
+					ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				}
+
+				lastCollision = "player1";
 			}
-			else if(ResourceManager::getModel("puck")->transform.position.y < ResourceManager::getModel("player1")->transform.position.y)
-			{
-				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-				ResourceManager::getModel("puck")->acceleration.y = -1.0f;
-			}
-			else
-			{
-				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-			}
-			lastCollision = "player1";
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("player2"), ResourceManager::getModel("puck")))
 		{
-			if(ResourceManager::getModel("puck")->transform.position.y > ResourceManager::getModel("player2")->transform.position.y)
+			if(lastCollision != "player2")
 			{
-				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-				ResourceManager::getModel("puck")->acceleration.y = 1.0f;
+				if(ResourceManager::getModel("puck")->transform.position.y > ResourceManager::getModel("player2")->transform.position.y)
+				{
+					ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+					ResourceManager::getModel("puck")->acceleration.y = 1.0f;
+				}
+				else if(ResourceManager::getModel("puck")->transform.position.y < ResourceManager::getModel("player2")->transform.position.y)
+				{
+					ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+					ResourceManager::getModel("puck")->acceleration.y = -1.0f;
+				}
+				else			
+				{
+					ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
+				}
+				lastCollision = "player2";
 			}
-			else if(ResourceManager::getModel("puck")->transform.position.y < ResourceManager::getModel("player2")->transform.position.y)
-			{
-				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-				ResourceManager::getModel("puck")->acceleration.y = -1.0f;
-			}
-			else			
-			{
-				ResourceManager::getModel("puck")->acceleration.x *= -1.0f;
-			}
-			lastCollision = "player2";
 		}
 		if(ResourceManager::getModel("puck")->transform.position.x > ResourceManager::getModel("goal2")->transform.position.x + (ResourceManager::getModel("goal2")->boundariesMAX.x/4)* ResourceManager::getModel("goal2")->transform.scale.x){
 			score1++;
 			ResourceManager::getModel("puck")->transform.position = glm::vec3(0.0f,0.0f,0.0f);
 			ResourceManager::getModel("puck")->acceleration = glm::vec2(3.0f,0.0f);
+			ResourceManager::getModel("player1")->transform.position = glm::vec3(-5.0f,0.0f,0.0f);
+			ResourceManager::getModel("player2")->transform.position = glm::vec3(5.0f,0.0f,0.0f);
+			nextControlTime = SDL_GetTicks();
 		}
 		if(ResourceManager::getModel("puck")->transform.position.x < ResourceManager::getModel("goal")->transform.position.x - (ResourceManager::getModel("goal")->boundariesMAX.x/4)* ResourceManager::getModel("goal")->transform.scale.x){
 			score2++;
 			ResourceManager::getModel("puck")->transform.position = glm::vec3(0.0f,0.0f,0.0f);
 			ResourceManager::getModel("puck")->acceleration = glm::vec2(-3.0f,0.0f);
+			ResourceManager::getModel("player1")->transform.position = glm::vec3(-5.0f,0.0f,0.0f);
+			ResourceManager::getModel("player2")->transform.position = glm::vec3(5.0f,0.0f,0.0f);
+			nextControlTime = SDL_GetTicks();
 		}
 		if(Physics::collisionDetection(ResourceManager::getModel("puck"), ResourceManager::getModel("UPobstacle")))
 		{
@@ -125,16 +155,49 @@ void Playstate::update()
 				lastCollision = "RIGHTBOTTOMobstacle";
 			}
 		}
+		if(SDL_GetTicks() >=nextControlTime){
+			nextControlTime += DELTA_CONTROL;
+			controlOpponent();
+		}
 		ResourceManager::getModel("puck")->transform.position.x += game->dt * ResourceManager::getModel("puck")->acceleration.x;
 		ResourceManager::getModel("puck")->transform.position.y += game->dt * ResourceManager::getModel("puck")->acceleration.y;
-		ResourceManager::getModel("player1")->transform.position.y += game->dt * ResourceManager::getModel("player1")->acceleration.y;
+		if(Physics::collisionDetection(ResourceManager::getModel("player1"), ResourceManager::getModel("LEFTUPobstacle")))
+		{
+			if(ResourceManager::getModel("player1")->acceleration.y < 0){
+				ResourceManager::getModel("player1")->transform.position.y += game->dt * ResourceManager::getModel("player1")->acceleration.y;
+			}
+		}
+		else if(Physics::collisionDetection(ResourceManager::getModel("player1"), ResourceManager::getModel("LEFTBOTTOMobstacle")))
+		{
+			if(ResourceManager::getModel("player1")->acceleration.y > 0){
+				ResourceManager::getModel("player1")->transform.position.y += game->dt * ResourceManager::getModel("player1")->acceleration.y;
+			}
+		}
+		else{
+			ResourceManager::getModel("player1")->transform.position.y += game->dt * ResourceManager::getModel("player1")->acceleration.y;
+		}
+		if(Physics::collisionDetection(ResourceManager::getModel("player2"), ResourceManager::getModel("RIGHTUPobstacle")))
+		{
+			if(ResourceManager::getModel("player2")->acceleration.y < 0){
+				ResourceManager::getModel("player2")->transform.position.y += game->dt * ResourceManager::getModel("player2")->acceleration.y;
+			}
+		}
+		else if(Physics::collisionDetection(ResourceManager::getModel("player2"), ResourceManager::getModel("RIGHTBOTTOMobstacle")))
+		{
+			if(ResourceManager::getModel("player2")->acceleration.y > 0){
+				ResourceManager::getModel("player2")->transform.position.y += game->dt * ResourceManager::getModel("player2")->acceleration.y;
+			}
+		}
+		else{
+			ResourceManager::getModel("player2")->transform.position.y += game->dt * ResourceManager::getModel("player2")->acceleration.y;
+		}
+		inputState = false;
+		std::string output = (score1 > score2 ? "WYGRALES!" : "PRZEGRALES!");
 	}
 	else{
 		inputState = false;
-		std::string output = "GRACZ ";
-		output+= (score1 > score2 ? "1 " : "2 ");
-		output+= "WYGRAL!";
-		ResourceManager::text.renderText("text", output  , game->screenWidth/2-90,game->screenHeight/2, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
+		std::string output = (score1 > score2 ? "WYGRALES!" : "PRZEGRALES!");
+		ResourceManager::text.renderText("text", output  , game->screenWidth/2-220,game->screenHeight/2, 1.0f, glm::vec3(1.0f,1.0f,1.0f));
 	}
 }
 void Playstate::draw()
@@ -142,7 +205,7 @@ void Playstate::draw()
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)game->screenWidth / (float)game->screenHeight, 0.1f, 100.0f);
 	glm::mat4 view = camera.getWorldToViewMatrix();
 
-	ResourceManager::text.renderText("text", std::to_string(score1) + " : " + std::to_string(score2) , (game->screenWidth/2)-50,(game->screenHeight)-60, 1.0f, glm::vec3(1.0f,0.0f,0.0f));
+	ResourceManager::text.renderText("text", std::to_string(score1) + " : " + std::to_string(score2) , (game->screenWidth/2)-110,(game->screenHeight)-60, 1.0f, glm::vec3(1.0f,0.0f,0.0f));
 	ResourceManager::getModel("player1")->draw("sample", view, projection);
 	ResourceManager::getModel("player2")->draw("sample", view, projection);
 	ResourceManager::getModel("puck")->draw("sample", view, projection);
@@ -219,4 +282,6 @@ Playstate::Playstate(Game * game){
 	ResourceManager::getModel("goal2")->transform.scale = glm::vec3(0.001f,0.0025f,0.001f);
 	ResourceManager::getModel("goal2")->transform.position = glm::vec3(5.1f,0.0f,0.0f);
 	ResourceManager::getModel("goal2")->transform.rotation = glm::vec3(90.0f,270.0f,0.0f);
+	
+	nextControlTime = SDL_GetTicks() + DELTA_CONTROL;
 }

@@ -10,6 +10,8 @@ class Playstate: public GameState{
 	int score1, score2;
 	bool inputState;
 	std::string lastCollision;
+	void controlOpponent();
+	uint32_t nextControlTime;
 public:
 	virtual void handleInput(SDL_Event event);
 	virtual void update();
