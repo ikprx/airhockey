@@ -69,12 +69,12 @@ void Playstate::update()
 			}
 			lastCollision = "player2";
 		}
-		if(ResourceManager::getModel("puck")->transform.position.x > ResourceManager::getModel("goal2")->transform.position.x + (ResourceManager::getModel("goal2")->boundariesMAX.x/2)* ResourceManager::getModel("goal2")->transform.scale.x){
+		if(ResourceManager::getModel("puck")->transform.position.x > ResourceManager::getModel("goal2")->transform.position.x + (ResourceManager::getModel("goal2")->boundariesMAX.x/4)* ResourceManager::getModel("goal2")->transform.scale.x){
 			score1++;
 			ResourceManager::getModel("puck")->transform.position = glm::vec3(0.0f,0.0f,0.0f);
 			ResourceManager::getModel("puck")->acceleration = glm::vec2(3.0f,0.0f);
 		}
-		if(ResourceManager::getModel("puck")->transform.position.x < ResourceManager::getModel("goal")->transform.position.x - (ResourceManager::getModel("goal")->boundariesMAX.x/2)* ResourceManager::getModel("goal")->transform.scale.x){
+		if(ResourceManager::getModel("puck")->transform.position.x < ResourceManager::getModel("goal")->transform.position.x - (ResourceManager::getModel("goal")->boundariesMAX.x/4)* ResourceManager::getModel("goal")->transform.scale.x){
 			score2++;
 			ResourceManager::getModel("puck")->transform.position = glm::vec3(0.0f,0.0f,0.0f);
 			ResourceManager::getModel("puck")->acceleration = glm::vec2(-3.0f,0.0f);
